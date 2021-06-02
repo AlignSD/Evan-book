@@ -1,18 +1,17 @@
-import App from ".next/app"
-import Layout from "../components/Layout/Layout"
-import 'semantic-ui-css/semantic.min.css'
+import App from "next/app";
+import Layout from "../components/Layout/Layout";
+import "semantic-ui-css/semantic.min.css";
 
-class NyApp extends App {
-    render() {
-        const { Component } = this.props;
+class MyApp extends App {
+  render() {
+    const { Component } = this.props;
 
-        return (
-            <Layout>
-                <Component />
-            </Layout>
-        );
-    }
-
+    return (
+      <Layout>
+        <Component />
+      </Layout>
+    );
+  }
 }
 
 export default MyApp;

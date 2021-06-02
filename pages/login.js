@@ -1,11 +1,18 @@
-import React from 'react'
+import React from "react";
+import baseUrl from "../utils/baseUrl";
+import axios from "axios";
+import {
+  HeaderMessage,
+  FooterMessage,
+} from "../components/Common/WelcomeMessage";
 
 function Login() {
-    return (
-        <div>
-            Login
-        </div>
-    )
+  return (
+    <>
+      <HeaderMessage />
+      <FooterMessage />
+    </>
+  );
 }
 
-export default Login
+export default Login;
