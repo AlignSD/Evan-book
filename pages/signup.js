@@ -1,6 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Form, Message, Segment } from "semantic-ui-react";
-
+import {
+  Form,
+  Button,
+  Message,
+  Segment,
+  TextArea,
+  Divider,
+} from "semantic-ui-react";
+import CommonInputs from "../components/Common/CommonInputs";
+import ImageDropDiv from "../components/Common/ImageDropDiv";
 import {
   HeaderMessage,
   FooterMessage,
@@ -18,8 +26,12 @@ function Signup() {
   });
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, files } = e.target;
 
+    if (name === "media") {
+      setMedia(files[0]);
+      setMediaPreview(URL.createObjectURL(files[0]));
+    }
     setUser((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -28,12 +40,26 @@ function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
   const [formLoading, setFormLoading] = useState(false);
+  const [submitDisabled, setSubmitDisabled] = useState(true);
 
   const [username, setUsername] = useState("");
   const [usernameLoading, setUsernameLoading] = useState(false);
   const [usernameAvailable, setUsernameAvailable] = useState(false);
 
+  const [media, setMedia] = useState(null);
+  const [mediaPreview, setMediaPreview] = useState(null);
+  const [highlighted, setHighlighted] = useState(false);
+  const inputRef = useRef();
+
   const handleSubmit = (e) => e.preventDefault();
+  const regexUserName = /^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$/;
+
+  useEffect(() => {
+    const isUser = Object.values({ name, email, password, bio }).every((item) =>
+      Boolean(item)
+    );
+    isUser ? setSubmitDisabled(false) : setSubmitDisabled(true);
+  }, [user]);
 
   return (
     <>
@@ -51,6 +77,15 @@ function Signup() {
         />
 
         <Segment>
+          <ImageDropDiv
+            mediaPreview={mediaPreview}
+            setMediaPreview={setMediaPreview}
+            setMedia={setMedia}
+            inputRef={inputRef}
+            highlighted={highlighted}
+            setHighlighted={setHighlighted}
+            handleChange={handleChange}
+          />
           <Form.Input
             label="Name"
             placeholder="Name"
@@ -90,6 +125,39 @@ function Signup() {
             iconPosition="left"
             type={showPassword ? "text" : "password"}
             required
+          />
+          <Form.Input
+            loading={usernameLoading}
+            error={!usernameAvailable}
+            label="Username"
+            placeholder="Username"
+            value={username}
+            onChange={(e) => {
+              setUsername(e.target.value);
+              if (regexUserName.test(e.target.value)) {
+                setUsernameAvailable(true);
+              } else {
+                setUsernameAvailable(false);
+              }
+            }}
+            fluid
+            icon={usernameAvailable ? "check" : "close"}
+            iconPosition="left"
+            required
+          />
+          <CommonInputs
+            user={user}
+            showSocialLinks={showSocialLinks}
+            setShowSocialLinks={setShowSocialLinks}
+            handleChange={handleChange}
+          />
+          <Divider hidden />
+          <Button
+            icon="signup"
+            content="Signup"
+            type="submit"
+            color="orange"
+            disabled={submitDisabled || !usernameAvailable}
           />
         </Segment>
       </Form>
